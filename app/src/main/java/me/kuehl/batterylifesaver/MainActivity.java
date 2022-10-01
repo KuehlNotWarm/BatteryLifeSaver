@@ -47,13 +47,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickBtn(View view) {
-        BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
-        int percentage = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+        int percentage = getBatteriePercentage();
         TextView statusPercentage = findViewById(R.id.statusPercentage);
         statusPercentage.setText("Akku ist bei " + percentage + "%");
 
         setPowerState("http://192.168.178.72", state);
-
     }
 
     private void setPowerState(String url, boolean powerState) {
@@ -82,5 +80,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Fehler getreten: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private int getBatteriePercentage(){
+        BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
+        return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
     }
 }
