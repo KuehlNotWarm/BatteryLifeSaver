@@ -32,29 +32,54 @@ public class MainActivity extends AppCompatActivity {
 
     private final static int INTERVAL = 1000 * 5;
 
+    private final static int MIN_CHARGE = 45;
+    private final static int MAX_CHARGE = 55;
+
+    private String url = "";
+
     MainActivity bob;
     boolean state = false;
-    Handler handler = new Handler();
-    Runnable handlerTask = () -> {
 
-    };
+    Handler handler = new Handler();
+    Runnable handlerTask = new Runnable() {
+
+        boolean shouldCharge = false;
+        boolean isCharging = true;
+
+        @Override
+        public void run() {
+            int charge = getBatteriePercentage();
+            if (charge > MAX_CHARGE)
+                shouldCharge=false;
+            if (charge < MIN_CHARGE)
+                shouldCharge=true;
+
+            if(shouldCharge!=isCharging){
+                setPowerState();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         bob = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        updateButtonText();
     }
 
     public void onClickBtn(View view) {
-        int percentage = getBatteriePercentage();
-        TextView statusPercentage = findViewById(R.id.statusPercentage);
-        statusPercentage.setText("Akku ist bei " + percentage + "%");
+        //int percentage = getBatteriePercentage();
+        //TextView statusPercentage = findViewById(R.id.statusPercentage);
+        //statusPercentage.setText("Akku ist bei " + percentage + "%");
 
-        setPowerState("http://192.168.178.72", state);
+        setPowerState("", true);
+        state = !state;
+        updateButtonText();
+        // TODO: handler task setzen oder entfernen, je nach state
     }
 
-    private void setPowerState(String url, boolean powerState) {
+    private void setPowerState(boolean powerState) {
         TextView statusSwitch = findViewById(R.id.statusSwitch);
 
         String endpoint = url + "/cm?cmnd=Power%20" + (powerState ? "On" : "off");
@@ -63,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, endpoint, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    // Display the first 500 characters of the response string.
                     statusSwitch.setText(response);
                 }
             }, new Response.ErrorListener() {
@@ -73,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-// Add the request to the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(this);
             queue.add(stringRequest);
         } catch (Exception e) {
@@ -85,5 +108,10 @@ public class MainActivity extends AppCompatActivity {
     private int getBatteriePercentage(){
         BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
         return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+    }
+
+    private void updateButtonText(){
+        Button button = findViewById(R.id.button);
+        button.setText(state ? "Läuft. Tippen zum stoppen" : "Tippen zum starten");
     }
 }
