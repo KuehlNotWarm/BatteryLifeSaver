@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int MIN_CHARGE = 45;
     private final static int MAX_CHARGE = 55;
 
-    private String url = "";
+    private String url = "http://192.168.178.72";
 
     MainActivity bob;
     boolean state = false;
@@ -48,14 +49,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            int charge = getBatteriePercentage();
+            int charge = getBatteryPercentage();
             if (charge > MAX_CHARGE)
                 shouldCharge=false;
             if (charge < MIN_CHARGE)
                 shouldCharge=true;
 
             if(shouldCharge!=isCharging){
-                setPowerState();
+                // TODO: actually set the right value lol
+                setPowerState(true);
             }
         }
     }
@@ -69,11 +71,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickBtn(View view) {
-        //int percentage = getBatteriePercentage();
+        //int percentage = getBatteryPercentage();
         //TextView statusPercentage = findViewById(R.id.statusPercentage);
         //statusPercentage.setText("Akku ist bei " + percentage + "%");
 
-        setPowerState("", true);
+        setPowerState(true);
         state = !state;
         updateButtonText();
         // TODO: handler task setzen oder entfernen, je nach state
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private int getBatteriePercentage(){
+    private int getBatteryPercentage(){
         BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
         return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
     }
