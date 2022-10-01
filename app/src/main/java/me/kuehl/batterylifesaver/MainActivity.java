@@ -28,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     boolean state = false;
     boolean isCharging = true;
 
-    Timer timer = new Handler();
+    Timer timer = new Timer();
     TimerTask timerTask = new TimerTask() {
 
         boolean shouldCharge = false;
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         if (state){
             timer.scheduleAtFixedRate(timerTask, 0, INTERVAL);
         }else{
-            // TODO: remove timer task
+            timer.cancel();
         }
     }
 
