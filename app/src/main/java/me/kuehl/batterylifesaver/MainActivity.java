@@ -10,6 +10,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
                 setPowerState(true);
             }
         }
-    }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +80,12 @@ public class MainActivity extends AppCompatActivity {
         setPowerState(true);
         state = !state;
         updateButtonText();
-        // TODO: handler task setzen oder entfernen, je nach state
+
+        if (state){
+            handler.post(handlerTask);
+        }else{
+            handler.removeCallbacks(handlerTask);
+        }
     }
 
     private void setPowerState(boolean powerState) {
