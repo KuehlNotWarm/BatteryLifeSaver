@@ -41,12 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
     MainActivity bob;
     boolean state = false;
+    boolean isCharging = true;
 
     Handler handler = new Handler();
     Runnable handlerTask = new Runnable() {
 
         boolean shouldCharge = false;
-        boolean isCharging = true;
 
         @Override
         public void run() {
@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 shouldCharge=true;
 
             if(shouldCharge!=isCharging){
-                // TODO: actually set the right value lol
-                setPowerState(true);
+                setPowerState(shouldCharge);
             }
         }
     };
@@ -89,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setPowerState(boolean powerState) {
+        isCharging = powerState;
         TextView statusSwitch = findViewById(R.id.statusSwitch);
 
         String endpoint = url + "/cm?cmnd=Power%20" + (powerState ? "On" : "off");
