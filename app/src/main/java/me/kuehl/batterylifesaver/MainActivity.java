@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     boolean state = false;
     boolean isCharging = true;
 
-    Handler handler = new Handler();
-    Runnable handlerTask = new Runnable() {
+    Timer timer = new Handler();
+    TimerTask timerTask = new TimerTask() {
 
         boolean shouldCharge = false;
 
@@ -81,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
         updateButtonText();
 
         if (state){
-            handler.post(handlerTask);
+            timer.scheduleAtFixedRate(timerTask, 0, INTERVAL);
         }else{
-            handler.removeCallbacks(handlerTask);
+            // TODO: remove timer task
         }
     }
 
